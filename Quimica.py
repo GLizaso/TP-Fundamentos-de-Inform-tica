@@ -1,3 +1,5 @@
+import re
+
 class Elemento:
     def __init__(self, simbolo, numeroAtomico, cantNeutrones, valencia):
         self._simbolo = simbolo
@@ -138,7 +140,10 @@ class CompuestoAux:
         self.moles = self.moles + cantidadMoles
 
     def masaCompuesto(self, compuesto):
-        if compuesto == self.compuesto return
+        if compuesto == self.compuesto:
+            return compuesto.masaMolar()
+        else:
+            return 0
 
 
 class ElementoConAtomo:  # esta clase esta OK
@@ -200,29 +205,6 @@ class Medio:
 
 
 """ 
- ************************CORRECCIONES PROFESOR*********************************
-4.
-Creo que el comentario "se que me esta devolviendo una lista no un elemento" en Medio puede estar relacionado con este método:
-
-    def sumaMasa(self,unaLambda):
-        return list(sum(list(map(unaLambda, self.listacompuestos))))
-
-acá te sobra un "list", es
-
-    def sumaMasa(self,unaLambda):
-        return sum(list(map(unaLambda, self.listacompuestos)))
-
-o aún más fácil
-
-    def sumaMasa(self,unaLambda):
-        return sum(map(unaLambda, self.listacompuestos))
-
-Aún así, para que te funcione p.ej. esto
-
-    def masaDeCompuesto(self, compuesto):
-        return self.sumaMasa(lambda compuesto: compuesto.masaCompuesto(compuesto))
-
-la clase CompuestoAux tiene que soportar la operación masaCompuesto. Puede devolver la masa si coincide el compuesto, o 0 en caso contrario.
 ***************************************************************************************************************************************
 No pude resolverlas :(
     def masaMolar(self):
@@ -246,11 +228,24 @@ a partir de esa descripción, la clase tiene que
 
 """
 
+def delimitedParts(theString,start,end):
+    return re.findall(start + '(.*?)' + end, theString)
+
+def crearCompuestos(lista):
+    listaCompuestos = []
+    for compuesto in lista:
+        cant = lista.count(compuesto)
+        compuestoAux = CompuestoAux(Compuesto(compuesto),cant)
+        listaCompuestos.append(compuestoAux)
+        lista = [value for value in lista if value != compuesto]
+
+    return listaCompuestos
 
 class DescripcionMedio:
-
-    def __init__(self, listadecompuestos):
-        medio = Medio(listadecompuestos)
+    def __init__(self, stringcompuestos):
+        listaStrings = delimitedParts(stringcompuestos, '[', ']')
+        listaCompuestos = crearCompuestos(listaStrings)
+        self.medio = Medio(listaCompuestos)
 
     def apareceCompuesto(self, comp):
         return comp in self.medio.getlistacompuesto()
@@ -274,10 +269,6 @@ carbono = Elemento('C', 6, 7, 2)
 nitrogeno = Elemento('N', 7, 6, 4)
 
 tabla = TablaPeriodica()
-"""
-5.
-En las constantes del final, los compuestos deberían ser instancias de la clase Compuesto.
-P.ej.
 
 agua = Compuesto()
 agua.agregarAtomo(hidrogeno, "H1")
@@ -285,8 +276,3 @@ agua.agregarAtomo(hidrogeno, "H2")
 agua.agregarAtomo(oxigeno, "O1")
 agua.enlazar("H1", "O1")
 agua.enlazar("H2", "O1")
-"""
-agua = ['H2O']
-metano = ['CH4']
-nh3 = ['NH3']
-co2 = ['CO2']
