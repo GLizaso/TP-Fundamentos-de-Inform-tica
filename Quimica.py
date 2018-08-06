@@ -83,24 +83,12 @@ class Compuesto:
     def atomosDe(self, elemento):
         return self.findelemento(elemento).cantAtomos()
 
-    """
-           ************************CORRECCIONES PROFESOR*********************************
-         VERSIÓN CORRECTA DE  incluyeAtomo:
-       def incluyeAtomo(atomo):
-           return any(map(lambda elementoConAtomo: atomo in elementoConAtomo.getAtomo(), self.elementosConAtomo))
-
-    """
-
-    #def incluyeAtomo(atomo):
-    #   return any(list(map(lambda elementoConAtomo: atomo in elementoConAtomo)))
-    # las siguientes dos lineas son escritas x el profe
     def incluyeAtomo(atomo):
         return any(map(lambda elementoConAtomo: atomo in elementoConAtomo.getAtomo(), self.elementosConAtomo))
-    #########
 
 
     def incluyeElemento(elemento):
-        return any(map(lambda elementoConAtomo: elemento == elementoConAtomo.getelemento(),self.elementosConAtomo))
+        return any(map(lambda elementoConAtomo: elemento == elementoConAtomo.getelemento(), self.elementosConAtomo))
 
     def elementosPresentes(self):
         return list(map(lambda elemento: elemento.getelemento(), self.elementosConAtomo))
@@ -117,12 +105,11 @@ class Compuesto:
 
     def masaMolar(self):
         return sum(map( lambda elemento: elemento.getelemento().pesoAtomico() , self.elementosConAtomo))
-    """ Comento este bloque porque masaElemento y masaCompuesto no las logre definir
 
     def proporcionElementoSobreMasa(elemento):
-      prop = self.masaElemento/self.masaCompuesto 
+        prop = elemento.pesoAtomico()/ self.masaMolar()
 
-    """
+
 
 
 class CompuestoAux:
@@ -145,6 +132,11 @@ class CompuestoAux:
         else:
             return 0
 
+    def masaMolarCompuesto(self, compuesto):
+        if compuesto == self.compuesto:
+            return compuesto.masaMolar()* self.moles
+        else:
+            return 0
 
 class ElementoConAtomo:  # esta clase esta OK
     def __init__(self, elemento):
@@ -197,6 +189,9 @@ class Medio:
     def masaDeElemento(self, elemento):
         return self.sumaMasa(lambda compuesto: compuesto.masaElemento(elemento))
 
+    def masaMolar(self):
+        return self.sumaMasa(lambda compuesto: compuesto.masaMolarCompuesto())
+
     def sumaMasa(self, unaLambda):
         return sum(map(unaLambda, self.listacompuestos))
 
@@ -205,16 +200,6 @@ class Medio:
 
 
 """ 
-***************************************************************************************************************************************
-No pude resolverlas :(
-    def masaMolar(self):
-        return sum(list(map((lambda compuestoAux: compuestoAux.getcompuesto().getelemento().masaMolar() * compuestoAux.getmoles()), self.listacompuestos))) # se que me esta devolviendo una lista no un elemento
-    def masaCompuesto(self,elemento):
-        return self. *self.moles
-    def masaElemento(self):
-        return 1  # como si fuese un mock
-                  # se que es el mismo procedimiento que en masaMolar, pero lo que logré que me retorne no es lo que necesito.
-************************CORRECCIONES PROFESOR*********************************
 6.
 Creo que lo de DescripcionMedio no está bien encarado. Al crear una Descripcion no se le pasa una lista de compuestos, sino un String. O sea, la idea no es p.ej.
     descr = DescripcionMedio([agua,metano])
