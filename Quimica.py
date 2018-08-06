@@ -65,7 +65,7 @@ class Compuesto:
             self.findelemento(elemento).agregarAtomo(nombreAtomo)
 
     def findelemento(self, elementobuscar):
-        return next((elemento for elemento in self.elementosConAtomo if elemento.getelemento == elementobuscar))
+        return next((elemento for elemento in self.elementosConAtomo if elemento.getelemento == elementobuscar), None)
 
     def enlazar(self, atomo1, atomo2):
         enlace = Enlace(atomo1, atomo2)
@@ -98,7 +98,7 @@ class Compuesto:
         return len(self.enlaces)
 
     def cantEnlacesAtomo(self, atomo):
-        return len(self.findenlaceatomo(atomo))
+        return len(list(self.findenlaceatomo(atomo)))
 
     def findenlaceatomo(self, atomo):
         return (enlace for enlace in self.enlaces if enlace.tieneAtomo(atomo))
@@ -107,7 +107,7 @@ class Compuesto:
         return sum(map( lambda elemento: elemento.getelemento().pesoAtomico() , self.elementosConAtomo))
 
     def proporcionElementoSobreMasa(elemento):
-        prop = elemento.pesoAtomico()/ self.masaMolar()
+        return elemento.pesoAtomico()/ self.masaMolar()
 
 
 
@@ -139,9 +139,9 @@ class CompuestoAux:
             return 0
 
 class ElementoConAtomo:  # esta clase esta OK
-    def __init__(self, elemento):
+    def __init__(self, elemento, nombreAtomo):
         self.elemento = elemento
-        self.listaAtomo = []
+        self.listaAtomo = [nombreAtomo]
 
     def getelemento(self):
         return self.elemento
@@ -166,7 +166,7 @@ class Enlace:
 
     def getEnlace(self):
         return self.atomo1+self.atomo2
-
+"""
 class Medio:
     def __init__(self):
         self.listacompuestos = []
@@ -199,19 +199,7 @@ class Medio:
         return self.listacompuestos
 
 
-""" 
-6.
-Creo que lo de DescripcionMedio no está bien encarado. Al crear una Descripcion no se le pasa una lista de compuestos, sino un String. O sea, la idea no es p.ej.
-    descr = DescripcionMedio([agua,metano])
-sino
-    descr = DescripcionMedio("[H2O][CH4]")
 
-a partir de esa descripción, la clase tiene que
-- obtener el substring "H2O" usando expresiones regulares
-- asociar con el agua a través de la fórmula
-
-
-"""
 
 def delimitedParts(theString,start,end):
     return re.findall(start + '(.*?)' + end, theString)
@@ -249,7 +237,7 @@ class DescripcionMedio:
     def agregarAMedio(self, medio, compuesto):
         medio.agregarComponente(compuesto, self.molesCompuesto(compuesto))
 
-
+"""
 # estas variables las uso para los test
 
 oxigeno = Elemento('O', 8, 8, 4)
@@ -258,10 +246,25 @@ carbono = Elemento('C', 6, 7, 2)
 nitrogeno = Elemento('N', 7, 6, 4)
 
 tabla = TablaPeriodica()
+tabla.agregarElemento(hidrogeno)
+tabla.agregarElemento(oxigeno)
+tabla.agregarElemento(nitrogeno)
+tabla.agregarElemento(carbono)
 
-agua = Compuesto()
+agua = Compuesto("H2O")
 agua.agregarAtomo(hidrogeno, "H1")
 agua.agregarAtomo(hidrogeno, "H2")
 agua.agregarAtomo(oxigeno, "O1")
 agua.enlazar("H1", "O1")
 agua.enlazar("H2", "O1")
+
+
+amoniaco = Compuesto("NH3")
+amoniaco.agregarAtomo(hidrogeno, "H1")
+amoniaco.agregarAtomo(hidrogeno, "H2")
+amoniaco.agregarAtomo(hidrogeno, "H3")
+amoniaco.agregarAtomo(nitrogeno, "N1")
+amoniaco.enlazar("H1", "N")
+amoniaco.enlazar("H2", "N")
+amoniaco.enlazar("H3", "N")
+
