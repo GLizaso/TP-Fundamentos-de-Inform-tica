@@ -166,7 +166,7 @@ class Enlace:
 
     def getEnlace(self):
         return self.atomo1+self.atomo2
-"""
+
 class Medio:
     def __init__(self):
         self.listacompuestos = []
@@ -237,7 +237,7 @@ class DescripcionMedio:
     def agregarAMedio(self, medio, compuesto):
         medio.agregarComponente(compuesto, self.molesCompuesto(compuesto))
 
-"""
+
 # estas variables las uso para los test
 
 oxigeno = Elemento('O', 8, 8, 4)
