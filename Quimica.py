@@ -235,12 +235,16 @@ class DescripcionMedio:
     def apareceCompuesto(self, comp):
         return comp in self.medio.getlistacompuesto()
 
-    # def molesCompuesto(self, comp):
-    #   return medio.
-    # no la pude resolver
+    def molesCompuesto(self, comp):
+        return self.findcompuesto(comp).getMoles()
+
+    def findcompuesto(self, compuesto):
+        return next((compuesto for compuesto in self.listacompuestos if compuesto.getcompuesto == compuesto))
+
+
     def quienesAparecen(self, listaDeCompuestos):
-        return map(lambda comp: comp.getcompuesto(),
-                   self.medio.getlistacompuesto()) & listaDeCompuestos  # busco interseccion con listaDeCompuestos
+        return list(set(map(lambda comp: comp.getcompuesto(),
+                   self.medio.getlistacompuesto())) & set(listaDeCompuestos))  # busco interseccion con listaDeCompuestos
 
     def agregarAMedio(self, medio, compuesto):
         medio.agregarComponente(compuesto, self.molesCompuesto(compuesto))
