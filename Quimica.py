@@ -65,7 +65,7 @@ class Compuesto:
             self.findelemento(elemento).agregarAtomo(nombreAtomo)
 
     def findelemento(self, elementobuscar):
-        return next((elemento for elemento in self.elementosConAtomo if elemento.getelemento == elementobuscar), None)
+        return next((elemento for elemento in self.elementosConAtomo if elemento.getelemento() == elementobuscar), None)
 
     def enlazar(self, atomo1, atomo2):
         enlace = Enlace(atomo1, atomo2)
@@ -77,17 +77,19 @@ class Compuesto:
     def getEnlaces(self):
         return self.enlaces
 
+    def getElementoConAtomo(self):
+        return self.elementosConAtomo
+
     def cantAtomos(self):
         return sum((map(lambda elementoConAtomo: elementoConAtomo.cantAtomos(), self.elementosConAtomo)))
 
     def atomosDe(self, elemento):
-        return self.findelemento(elemento).cantAtomos()
+        return self.findelemento(elemento).getAtomo()
 
-    def incluyeAtomo(atomo):
+    def incluyeAtomo(self, atomo):
         return any(map(lambda elementoConAtomo: atomo in elementoConAtomo.getAtomo(), self.elementosConAtomo))
 
-
-    def incluyeElemento(elemento):
+    def incluyeElemento(self, elemento):
         return any(map(lambda elementoConAtomo: elemento == elementoConAtomo.getelemento(), self.elementosConAtomo))
 
     def elementosPresentes(self):
@@ -106,9 +108,8 @@ class Compuesto:
     def masaMolar(self):
         return sum(map( lambda elemento: elemento.getelemento().pesoAtomico() , self.elementosConAtomo))
 
-    def proporcionElementoSobreMasa(elemento):
+    def proporcionElementoSobreMasa(self, elemento):
         return elemento.pesoAtomico()/ self.masaMolar()
-
 
 
 
@@ -178,16 +179,42 @@ class Medio:
             self.findcompuesto(compuesto).aniadirmoles(cantMoles)
 
     def findcompuesto(self, compuesto):
-        return next((compuesto for compuesto in self.listacompuestos if compuesto.getcompuesto == compuesto))
+        return next((compuesto for compuesto in self.listacompuestos if compuesto.getcompuesto == compuesto), None)
 
     def masaTotal(self):  # creo que la suma de las masas molares es la masa total
         return self.sumaMasa(lambda compuesto: compuesto.masaMolar())
+
+    def elementosPresentes(self):
+        elementosP = []
+        for compuestoAux in self.listacompuestos:
+            listaElementos = compuestoAux.getcompuesto().getElementoConAtomo()
+            self.agregar(elementosP,listaElementos)
+        return elementosP
+
+    def agregar(self, lista1, lista2):
+        for elemento in lista2:
+            if elemento.getelemento() not in lista1:
+                lista1.append(elemento.getelemento())
+
+    def compuestosPresentes(self):
+        compuestosP = []
+        listaCompuesto = map(lambda compuesto: compuesto.getcompuesto(), self.listacompuestos)
+        self.agregar(compuestosP, listaCompuesto)
+        return compuestosP
+
+   # def cantMolesElemento(elemento): no conozco la relación. Se cuantos moles tengo por compuesto pero no por elemento.
 
     def masaDeCompuesto(self, compuesto):
         return self.sumaMasa(lambda compuesto: compuesto.masaCompuesto(compuesto))
 
     def masaDeElemento(self, elemento):
         return self.sumaMasa(lambda compuesto: compuesto.masaElemento(elemento))
+
+    def proporcionElementoSobreMasa(self, elemento):
+        return self.masaDeElemento()/self.masaTotal()
+
+    def proporcionCompuestoSobreMasa(self,compuesto):
+        return self.masaDeCompuesto() / self.masaTotal()
 
     def masaMolar(self):
         return self.sumaMasa(lambda compuesto: compuesto.masaMolarCompuesto())
@@ -258,7 +285,6 @@ agua.agregarAtomo(oxigeno, "O1")
 agua.enlazar("H1", "O1")
 agua.enlazar("H2", "O1")
 
-
 amoniaco = Compuesto("NH3")
 amoniaco.agregarAtomo(hidrogeno, "H1")
 amoniaco.agregarAtomo(hidrogeno, "H2")
@@ -267,4 +293,11 @@ amoniaco.agregarAtomo(nitrogeno, "N1")
 amoniaco.enlazar("H1", "N")
 amoniaco.enlazar("H2", "N")
 amoniaco.enlazar("H3", "N")
-
+"""
+medioRaro = Medio()
+medioRaro.agregarComponente(agua, 100)
+medioRaro.agregarComponente(amoniaco, 6)
+medioRaro.agregarComponente(metano, 20)
+medioRaro.agregarComponente(co2, 14)
+medioRaro.agregarComponente(amoniaco, 15)
+"""
