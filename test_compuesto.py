@@ -29,6 +29,8 @@ class TestCompuesto(unittest.TestCase):
     def test_masa_molar(self):
         self.assertEqual(17, Quimica.amoniaco.masaMolar())
 
+    def test_masa_molar_agua(self):
+        self.assertEqual(18, Quimica.agua.masaMolar())
     def test_proporcion(self):
         self.assertEqual(0.8235, Quimica.amoniaco.proporcionElementoSobreMasa(Quimica.tabla.elementoS('N')))
 
