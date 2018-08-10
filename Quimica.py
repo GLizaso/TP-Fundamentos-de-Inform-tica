@@ -133,11 +133,16 @@ class CompuestoAux:
         else:
             return 0
 
-    def masaMolarCompuesto(self, compuesto):
+    def masaMolarCompuesto(self):
+        return self.compuesto.masaMolar() * self.moles
+
+    def masaMolarCompuesto(self,compuesto):
         if compuesto == self.compuesto:
             return compuesto.masaMolar()* self.moles
         else:
             return 0
+
+
 
 class ElementoConAtomo:  # esta clase esta OK
     def __init__(self, elemento, nombreAtomo):
@@ -182,30 +187,35 @@ class Medio:
         return next((compuesto for compuesto in self.listacompuestos if compuesto.getcompuesto == compuesto), None)
 
     def masaTotal(self):  # creo que la suma de las masas molares es la masa total
-        return self.sumaMasa(lambda compuesto: compuesto.masaMolar())
+        return self.sumaMasa(lambda compuesto: compuesto.masaMolarCompuesto())
 
     def elementosPresentes(self):
         elementosP = []
         for compuestoAux in self.listacompuestos:
             listaElementos = compuestoAux.getcompuesto().getElementoConAtomo()
-            self.agregar(elementosP,listaElementos)
+            self.agregarElemento(elementosP,listaElementos)
         return elementosP
 
-    def agregar(self, lista1, lista2):
+    def agregarElemento(self, lista1, lista2):
         for elemento in lista2:
             if elemento.getelemento() not in lista1:
                 lista1.append(elemento.getelemento())
 
+    def agregarCompuesto(self, lista1, lista2):
+        for compuesto in lista2:
+            if compuesto not in lista1:
+                lista1.append(compuesto)
+
     def compuestosPresentes(self):
         compuestosP = []
         listaCompuesto = map(lambda compuesto: compuesto.getcompuesto(), self.listacompuestos)
-        self.agregar(compuestosP, listaCompuesto)
+        self.agregarCompuesto(compuestosP, listaCompuesto)
         return compuestosP
 
    # def cantMolesElemento(elemento): no conozco la relación. Se cuantos moles tengo por compuesto pero no por elemento.
 
-    def masaDeCompuesto(self, compuesto):
-        return self.sumaMasa(lambda compuesto: compuesto.masaCompuesto(compuesto))
+    def masaDeCompuesto(self, comp):
+        return self.sumaMasa(lambda compuesto: compuesto.masaMolarCompuesto(comp))
 
     def masaDeElemento(self, elemento):
         return self.sumaMasa(lambda compuesto: compuesto.masaElemento(elemento))
@@ -290,14 +300,33 @@ amoniaco.agregarAtomo(hidrogeno, "H1")
 amoniaco.agregarAtomo(hidrogeno, "H2")
 amoniaco.agregarAtomo(hidrogeno, "H3")
 amoniaco.agregarAtomo(nitrogeno, "N1")
-amoniaco.enlazar("H1", "N")
-amoniaco.enlazar("H2", "N")
-amoniaco.enlazar("H3", "N")
-"""
+amoniaco.enlazar("H1", "N1")
+amoniaco.enlazar("H2", "N1")
+amoniaco.enlazar("H3", "N1")
+
+co2 = Compuesto("CO2")
+co2.agregarAtomo(carbono, "C1")
+co2.agregarAtomo(oxigeno, "O1")
+co2.agregarAtomo(oxigeno, "O2")
+co2.enlazar("O1" , "C1")
+co2.enlazar("O2" , "C1")
+
+metano = Compuesto("CH4")
+metano.agregarAtomo(carbono, "C1")
+metano.agregarAtomo(hidrogeno, "H1")
+metano.agregarAtomo(hidrogeno, "H2")
+metano.agregarAtomo(hidrogeno, "H3")
+metano.agregarAtomo(hidrogeno, "H4")
+metano.enlazar("H1" , "C1" )
+metano.enlazar("H2" , "C1" )
+metano.enlazar("H3" , "C1" )
+metano.enlazar("H4" , "C1" )
+
+
+
 medioRaro = Medio()
 medioRaro.agregarComponente(agua, 100)
 medioRaro.agregarComponente(amoniaco, 6)
 medioRaro.agregarComponente(metano, 20)
 medioRaro.agregarComponente(co2, 14)
 medioRaro.agregarComponente(amoniaco, 15)
-"""
