@@ -105,12 +105,20 @@ class Compuesto:
     def findenlaceatomo(self, atomo):
         return (enlace for enlace in self.enlaces if enlace.tieneAtomo(atomo))
 
+    def masaElemento(self,elemento):
+        elementoBuscado = self.findelemento(elemento)
+        if elementoBuscado != None:
+            return elementoBuscado.masaElemento()
+        return 0
+
     def masaMolar(self):
         return sum(map( lambda elemento: elemento.getelemento().pesoAtomico() , self.elementosConAtomo))
 
     def proporcionElementoSobreMasa(self, elemento):
         return elemento.pesoAtomico()/ self.masaMolar()
 
+    def getFormula(self):
+        return self.formula
 
 
 class CompuestoAux:
@@ -161,6 +169,8 @@ class ElementoConAtomo:  # esta clase esta OK
     def cantAtomos(self):
         return len(self.listaAtomo)
 
+    def masaElemento(self):
+       return self.elemento.pesoAtomico()
 
 class Enlace:
     def __init__(self, atomo1, atomo2):
@@ -190,7 +200,7 @@ class Medio:
         return next((compuesto for compuesto in self.listacompuestos if compuesto.getcompuesto == compuesto), None)
 
     def masaTotal(self):  # creo que la suma de las masas molares es la masa total
-        return self.sumaMasa(lambda compuesto: compuesto.masaMolarCompuesto())
+        return self.sumaMasa(lambda compuesto: compuesto.masaMolarCompuesto(compuesto))
 
     def elementosPresentes(self):
         elementosP = []
@@ -221,7 +231,7 @@ class Medio:
         return self.sumaMasa(lambda compuesto: compuesto.masaMolarCompuesto(comp))
 
     def masaDeElemento(self, elemento):
-        return self.sumaMasa(lambda compuesto: compuesto.masaElemento(elemento))
+        return self.sumaMasa(lambda compuesto: compuesto.getcompuesto().masaElemento(elemento))
 
     def proporcionElementoSobreMasa(self, elemento):
         return self.masaDeElemento()/self.masaTotal()
@@ -240,29 +250,49 @@ class Medio:
 
 
 
+def descripcionMedioRE(string):
+    lista = re.findall('[' + '\w' + ']', string)
+    lista = unirLista(lista)
+    return lista
 
-def delimitedParts(theString,start,end):
-    return re.findall(start + '(.*?)' + end, theString)
+def unirLista(lista):
+    listaFinal=[]
+    i=0
+    while i < len(lista):
+        temp=""
+        temp = temp + lista.__getitem__(i)
+        temp = temp + lista.__getitem__(i + 1)
+        temp = temp + lista.__getitem__(i + 2)
+        listaFinal.append(temp)
+        i+=3
+    return listaFinal
+
+def estaEnLista(lista,elemento):
+    for compuesto in lista:
+        if elemento == compuesto.getcompuesto().getFormula():
+            return True
+    return False
 
 def crearCompuestos(lista):
     listaCompuestos = []
     for compuesto in lista:
-        cant = lista.count(compuesto)
-        compuestoAux = CompuestoAux(Compuesto(compuesto),cant)
-        listaCompuestos.append(compuestoAux)
-        lista = [value for value in lista if value != compuesto]
-
+        if not estaEnLista(listaCompuestos,compuesto):
+            cant = lista.count(compuesto)
+            compuestoAux = CompuestoAux(Compuesto(compuesto), cant)
+            listaCompuestos.append(compuestoAux)
+    print(listaCompuestos)
     return listaCompuestos
 
 class DescripcionMedio:
     def __init__(self, stringcompuestos):
-        self.listaStrings = delimitedParts(stringcompuestos, '[', ']')
+        self.listaStrings = descripcionMedioRE(stringcompuestos)
         self.listaCompuestos = crearCompuestos(self.listaStrings)
         self.medio = Medio()
         self.medio.inicializar(self.listaCompuestos)
 
     def apareceCompuesto(self, comp):
-        return comp in self.medio.getlistacompuesto()
+        print(self.medio.getlistacompuesto())
+        return estaEnLista(self.medio.getlistacompuesto(),comp.getFormula())
 
     def molesCompuesto(self, comp):
         if(self.findcompuesto(comp)!= None):
@@ -280,6 +310,8 @@ class DescripcionMedio:
     def agregarAMedio(self, medio, compuesto):
         medio.agregarComponente(compuesto, self.molesCompuesto(compuesto))
 
+    def getMedio(self):
+        return self.medio
 
 # estas variables las uso para los test
 
@@ -338,10 +370,3 @@ medioRaro.agregarComponente(co2, 14)
 medioRaro.agregarComponente(amoniaco, 15)
 
 miDescripcion = DescripcionMedio("[H2O][CO2][H2O][CH4]")
-miDescripcion.apareceCompuesto(agua)
-miDescripcion.apareceCompuesto(co2)
-miDescripcion.apareceCompuesto(nitrogeno)
-miDescripcion.molesCompuesto(agua)
-miDescripcion.molesCompuesto(co2)
-miDescripcion.molesCompuesto(nitrogeno)
-miDescripcion.quienesAparecen([agua, nitrogeno, metano])
