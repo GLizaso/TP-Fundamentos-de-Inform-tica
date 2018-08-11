@@ -20,9 +20,11 @@ class TestMedioRaro(unittest.TestCase):
     def test_masa_por_compuesto_amoniaco(self):
         self.assertEqual(357, Quimica.medioRaro.masaDeCompuesto(Quimica.amoniaco))
 
+    def test_masa_por_elemento_oxigeno(self):
+        self.assertEqual(2048, Quimica.medioRaro.masaDeElemento(Quimica.oxigeno))
 
+    #def test_masa_por_elemento_carbono(self):
+    #    self.assertEqual(408, Quimica.medioRaro.masaDeElemento(Quimica.carbono))
 
-#        def test_cant_atomos(self):
-#            self.assertEqual(4, Quimica.amoniaco.cantAtomos())
 
 
