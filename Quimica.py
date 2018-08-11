@@ -177,6 +177,9 @@ class Medio:
     def __init__(self):
         self.listacompuestos = []
 
+    def inicializar(self,lista):
+        self.listacompuestos = lista
+
     def agregarComponente(self, compuesto, cantMoles):
         if self.findcompuesto(compuesto) is None:
             self.listacompuestos.append(CompuestoAux(compuesto, cantMoles))
@@ -253,18 +256,21 @@ def crearCompuestos(lista):
 
 class DescripcionMedio:
     def __init__(self, stringcompuestos):
-        listaStrings = delimitedParts(stringcompuestos, '[', ']')
-        listaCompuestos = crearCompuestos(listaStrings)
-        self.medio = Medio(listaCompuestos)
+        self.listaStrings = delimitedParts(stringcompuestos, '[', ']')
+        self.listaCompuestos = crearCompuestos(self.listaStrings)
+        self.medio = Medio()
+        self.medio.inicializar(self.listaCompuestos)
 
     def apareceCompuesto(self, comp):
         return comp in self.medio.getlistacompuesto()
 
     def molesCompuesto(self, comp):
-        return self.findcompuesto(comp).getMoles()
+        if(self.findcompuesto(comp)!= None):
+            return self.findcompuesto(comp).getMoles()
+        return 0
 
     def findcompuesto(self, compuesto):
-        return next((compuesto for compuesto in self.listacompuestos if compuesto.getcompuesto == compuesto))
+        return next((compuesto for compuesto in self.listaCompuestos if compuesto.getcompuesto == compuesto), None)
 
 
     def quienesAparecen(self, listaDeCompuestos):
@@ -330,3 +336,12 @@ medioRaro.agregarComponente(amoniaco, 6)
 medioRaro.agregarComponente(metano, 20)
 medioRaro.agregarComponente(co2, 14)
 medioRaro.agregarComponente(amoniaco, 15)
+
+miDescripcion = DescripcionMedio("[H2O][CO2][H2O][CH4]")
+miDescripcion.apareceCompuesto(agua)
+miDescripcion.apareceCompuesto(co2)
+miDescripcion.apareceCompuesto(nitrogeno)
+miDescripcion.molesCompuesto(agua)
+miDescripcion.molesCompuesto(co2)
+miDescripcion.molesCompuesto(nitrogeno)
+miDescripcion.quienesAparecen([agua, nitrogeno, metano])
