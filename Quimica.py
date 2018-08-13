@@ -152,7 +152,7 @@ class CompuestoAux:
 
 
 
-class ElementoConAtomo:  # esta clase esta OK
+class ElementoConAtomo:
     def __init__(self, elemento, nombreAtomo):
         self.elemento = elemento
         self.listaAtomo = [nombreAtomo]
