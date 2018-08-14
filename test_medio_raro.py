@@ -11,9 +11,6 @@ class TestMedioRaro(unittest.TestCase):
     def test_compuestos_presentes(self):
         self.assertEqual([Quimica.agua, Quimica.amoniaco, Quimica.metano, Quimica.co2], Quimica.medioRaro.compuestosPresentes())
 
-#    def cantidad_de_moles_elemento(self):
-# no pude hacer el metodo
-
     def test_masa_por_compuesto_agua(self):
         self.assertEqual(1800, Quimica.medioRaro.masaDeCompuesto(Quimica.agua))
 
