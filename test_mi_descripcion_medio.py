@@ -22,4 +22,5 @@ class TestDescripcionMedio(unittest.TestCase):
         return self.assertEqual(1, Quimica.miDescripcion.molesCompuesto(Quimica.co2))
 
     def test_moles_compuesto_nh3(self):
-        return self.assertEqual(1, Quimica.miDescripcion.molesCompuesto(Quimica.amoniaco))
+        return self.assertEqual(0, Quimica.miDescripcion.molesCompuesto(Quimica.amoniaco))
+
