@@ -39,7 +39,7 @@ class TablaPeriodica:
 
     def agregarElemento(self, elemento_x):
         if self.elementoS(elemento_x.simbolo()) is None:
-            self.elementosatributo.append(elemento_x)  # o elementos.append(elemento) cuando modificás un atributo de un objeto, queda más claro accediendo por el atributo que por el método. Por lo tanto, lo que hiciste en el método agregarElemento de TablaPeriodica es lo que se espera.
+            self.elementosatributo.append(elemento_x)
 
     def elementoS(self, simbolo):
         return self.findElemento(simbolo, lambda elemento: elemento.simbolo())
@@ -96,7 +96,6 @@ class Compuesto:
         return list(map(lambda elemento: elemento.getelemento(), self.elementosConAtomo))
 
     def cantEnlaces(self):
-        #return list(map(lambda enlaces: enlaces.cantEnlaces(), self.enlaces))
         return len(self.enlaces)
 
     def cantEnlacesAtomo(self, atomo):
@@ -141,12 +140,10 @@ class CompuestoAux:
         else:
             return 0
 
-    def masaMolarCompuesto(self):
-        return self.compuesto.masaMolar() * self.moles
 
     def masaMolarCompuesto(self,compuesto):
         if compuesto == self.compuesto:
-            return compuesto.masaMolar()* self.moles
+            return compuesto.masaMolar()*self.moles
         else:
             return 0
 
@@ -199,7 +196,7 @@ class Medio:
     def findcompuesto(self, compuesto):
         return next((compuesto for compuesto in self.listacompuestos if compuesto.getcompuesto == compuesto), None)
 
-    def masaTotal(self):  # creo que la suma de las masas molares es la masa total
+    def masaTotal(self):
         return self.sumaMasa(lambda compuesto: compuesto.masaMolarCompuesto(compuesto))
 
     def elementosPresentes(self):
@@ -225,13 +222,11 @@ class Medio:
         self.agregarCompuesto(compuestosP, listaCompuesto)
         return compuestosP
 
-   # def cantMolesElemento(elemento): no conozco la relación. Se cuantos moles tengo por compuesto pero no por elemento.
-
     def masaDeCompuesto(self, comp):
         return self.sumaMasa(lambda compuesto: compuesto.masaMolarCompuesto(comp))
 
     def masaDeElemento(self, elemento):
-        return self.sumaMasa(lambda compuesto: compuesto.getcompuesto().masaElemento(elemento))
+        return self.sumaMasa(lambda compuesto: compuesto.getcompuesto().masaElemento(elemento) * compuesto.getmoles())
 
     def proporcionElementoSobreMasa(self, elemento):
         return self.masaDeElemento()/self.masaTotal()
@@ -248,7 +243,6 @@ class Medio:
     def getlistacompuesto(self):
         return self.listacompuestos
 
-###### correcciones####
 
 def descripcionMedioRE(string):
     return re.findall('\[(.*?)\]', string)
@@ -257,7 +251,6 @@ def descripcionMedioRE(string):
 class DescripcionMedio:
     def __init__(self, stringcompuestos):
         self.lista = descripcionMedioRE(stringcompuestos)
-        print(self.lista)
         self.listaCompuestos = list(set(self.lista))
         self.medio = Medio()
         self.medio.inicializar([])
@@ -271,7 +264,7 @@ class DescripcionMedio:
 
     def quienesAparecen(self, listaDeCompuestos):
         return list(set(map(lambda comp: comp.getcompuesto(),
-                   self.medio.getlistacompuesto())) & set(listaDeCompuestos))  # busco interseccion con listaDeCompuestos
+                   self.medio.getlistacompuesto())) & set(listaDeCompuestos))
 
     def agregarAMedio(self, medio, compuesto):
         medio.agregarComponente(compuesto, self.molesCompuesto(compuesto))
@@ -279,11 +272,11 @@ class DescripcionMedio:
     def getMedio(self):
         return self.medio
 
-# estas variables las uso para los test
+
 
 oxigeno = Elemento('O', 8, 8, 4)
 hidrogeno = Elemento('H', 1, 0, 1)
-carbono = Elemento('C', 6, 7, 2)
+carbono = Elemento('C', 6, 6, 2)
 nitrogeno = Elemento('N', 7, 7, 4)
 
 tabla = TablaPeriodica()
