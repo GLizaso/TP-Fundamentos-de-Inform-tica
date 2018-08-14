@@ -112,7 +112,7 @@ class Compuesto:
         return 0
 
     def masaMolar(self):
-        return sum(map( lambda elemento: elemento.getelemento().pesoAtomico() , self.elementosConAtomo))
+        return sum(map(lambda elemento: elemento.masaElemento(), self.elementosConAtomo))
 
     def proporcionElementoSobreMasa(self, elemento):
         return elemento.pesoAtomico()/ self.masaMolar()
@@ -170,7 +170,7 @@ class ElementoConAtomo:
         return len(self.listaAtomo)
 
     def masaElemento(self):
-       return self.elemento.pesoAtomico()
+       return self.elemento.pesoAtomico()*self.cantAtomos() #issue
 
 class Enlace:
     def __init__(self, atomo1, atomo2):
@@ -316,9 +316,9 @@ class DescripcionMedio:
 # estas variables las uso para los test
 
 oxigeno = Elemento('O', 8, 8, 4)
-hidrogeno = Elemento('H', 1, 1, 1)
+hidrogeno = Elemento('H', 1, 0, 1)
 carbono = Elemento('C', 6, 7, 2)
-nitrogeno = Elemento('N', 7, 6, 4)
+nitrogeno = Elemento('N', 7, 7, 4)
 
 tabla = TablaPeriodica()
 tabla.agregarElemento(hidrogeno)
