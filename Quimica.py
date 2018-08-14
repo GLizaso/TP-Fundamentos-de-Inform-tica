@@ -248,60 +248,26 @@ class Medio:
     def getlistacompuesto(self):
         return self.listacompuestos
 
-
+###### correcciones####
 
 def descripcionMedioRE(string):
-    lista = re.findall('[' + '\w' + ']', string)
-    lista = unirLista(lista)
-    return lista
+    return re.findall('\[(.*?)\]', string)
 
-def unirLista(lista):
-    listaFinal=[]
-    i=0
-    while i < len(lista):
-        temp=""
-        temp = temp + lista.__getitem__(i)
-        temp = temp + lista.__getitem__(i + 1)
-        temp = temp + lista.__getitem__(i + 2)
-        listaFinal.append(temp)
-        i+=3
-    return listaFinal
-
-def estaEnLista(lista,elemento):
-    for compuesto in lista:
-        if elemento == compuesto.getcompuesto().getFormula():
-            return True
-    return False
-
-def crearCompuestos(lista):
-    listaCompuestos = []
-    for compuesto in lista:
-        if not estaEnLista(listaCompuestos,compuesto):
-            cant = lista.count(compuesto)
-            compuestoAux = CompuestoAux(Compuesto(compuesto), cant)
-            listaCompuestos.append(compuestoAux)
-    print(listaCompuestos)
-    return listaCompuestos
 
 class DescripcionMedio:
     def __init__(self, stringcompuestos):
-        self.listaStrings = descripcionMedioRE(stringcompuestos)
-        self.listaCompuestos = crearCompuestos(self.listaStrings)
+        self.lista = descripcionMedioRE(stringcompuestos)
+        print(self.lista)
+        self.listaCompuestos = list(set(self.lista))
         self.medio = Medio()
-        self.medio.inicializar(self.listaCompuestos)
+        self.medio.inicializar([])
 
     def apareceCompuesto(self, comp):
-        print(self.medio.getlistacompuesto())
-        return estaEnLista(self.medio.getlistacompuesto(),comp.getFormula())
+        return comp.getFormula() in self.listaCompuestos
 
     def molesCompuesto(self, comp):
-        if(self.findcompuesto(comp)!= None):
-            return self.findcompuesto(comp).getMoles()
-        return 0
-
-    def findcompuesto(self, compuesto):
-        return next((compuesto for compuesto in self.listaCompuestos if compuesto.getcompuesto == compuesto), None)
-
+        print(comp.getFormula())
+        return self.lista.count(comp.getFormula())
 
     def quienesAparecen(self, listaDeCompuestos):
         return list(set(map(lambda comp: comp.getcompuesto(),
